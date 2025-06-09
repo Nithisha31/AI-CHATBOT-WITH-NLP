@@ -17,7 +17,7 @@ PLATFORM USED: VS CODE
 INTRODUCTION
 This repository contains the work I completed during my internship on AI Chatbot Development using Natural Language Processing (NLP). In this project, I explored how machines understand and respond to human language through simple, smart conversations. My goal was to build a chatbot that can answer questions, provide information, and respond naturally to user input—just like talking to a real person.
 
-DESCIPTION :
+DESCRIPTION :
 
 The main task during this internship was to design and develop a chatbot that uses NLP techniques to understand user messages and respond with accurate and relevant replies. The chatbot was built to handle casual conversation, answer FAQs, and assist users with basic queries.
 
