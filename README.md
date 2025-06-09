@@ -60,6 +60,7 @@ These tools allowed me to build both the backend logic and the conversational in
 All development work was done using Visual Studio Code (VS Code). Its powerful features like syntax highlighting, debugger, terminal access, and Python integration made it easier to write, test, and manage the project. I also used Jupyter Notebook to experiment with and test NLP features before integrating them into the chatbot.
 
 APPLICATIONS :
+
 AI Chatbots with NLP are useful in many fields. Here are some real-world applications:
 
 Customer Support – Bots that handle FAQs and guide users 24/7
