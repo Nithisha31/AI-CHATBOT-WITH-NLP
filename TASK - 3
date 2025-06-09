@@ -1,0 +1,109 @@
+'''__________________________ TASK - 3 -----------------------
+         AI CHATBOT WITH NLP'''
+
+import nltk
+import random
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import make_pipeline
+
+# --- 1. Download NLTK data (run this once if you haven't) ---
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
+# --- 2. Define Intents and Responses ---
+# This is where you define what your chatbot can "understand" and how it should respond.
+# For a real application, you'd have many more intents and more sophisticated responses.
+intents = {
+    "greeting": {
+        "patterns": ["hi", "hello", "hey", "good morning", "good evening", "greetings"],
+        "responses": ["Hello!", "Hi there!", "Hey!", "Greetings!", "Nice to see you again!"]
+    },
+    "goodbye": {
+        "patterns": ["bye", "goodbye", "see you", "farewell", "quit", "exit"],
+        "responses": ["Goodbye!", "See you later!", "It was nice chatting with you!", "Bye for now!"]
+    },
+    "thanks": {
+        "patterns": ["thank you", "thanks", "appreciate it"],
+        "responses": ["You're welcome!", "No problem!", "Glad I could help!", "My pleasure!"]
+    },
+    "name_query": {
+        "patterns": ["what is your name", "who are you", "your name"],
+        "responses": ["I am a chatbot.", "I don't have a name.", "You can call me AI Assistant."]
+    },
+    "how_are_you": {
+        "patterns": ["how are you", "how are you doing", "what's up"],
+        "responses": ["I'm a bot, so I don't have feelings, but I'm ready to help!", "I am functioning correctly.",
+                      "All systems nominal!"]
+    },
+    "capabilities": {
+        "patterns": ["what can you do", "help me", "can you help", "what do you do"],
+        "responses": ["I can answer your questions, provide information, or just chat. What do you need?",
+                      "I can assist with various queries. Just ask!",
+                      "I'm here to help you with information and simple conversations."]
+    },
+    "unknown": {
+        "patterns": [],  # No specific patterns, this is the fallback
+        "responses": ["I'm not sure I understand.", "Could you rephrase that?", "Please tell me more.",
+                      "I am still learning and cannot process that specific query at the moment."]
+    }
+}
+
+# --- 3. Prepare Training Data for Intent Classification ---
+# We'll create lists of all patterns and their corresponding labels (intents)
+training_sentences = []
+training_labels = []
+
+for intent, data in intents.items():
+    for pattern in data["patterns"]:
+        training_sentences.append(pattern)
+        training_labels.append(intent)
+
+# --- 4. Build and Train the Intent Classifier (using Scikit-learn Pipeline) ---
+# We use TF-IDF for text feature extraction and LinearSVC for classification.
+# A pipeline combines these steps.
+model = make_pipeline(TfidfVectorizer(),
+                      LinearSVC(max_iter=1000))  # max_iter to prevent convergence warning for small datasets
+
+# Train the model
+model.fit(training_sentences, training_labels)
+
+
+# --- 5. Chatbot Function ---
+def get_chatbot_response(user_input):
+    # Predict the intent of the user's input
+    predicted_intent = model.predict([user_input])[0]
+
+    # If the confidence for the predicted intent is low, or if the intent is "unknown",
+    # you might want to fall back to a generic response.
+    # For LinearSVC, direct probability is not available, but you could use decision_function
+    # and set a threshold, or simply rely on the 'unknown' intent as a catch-all.
+    # For this simple example, we'll directly use the predicted_intent.
+
+    if predicted_intent in intents:
+        responses = intents[predicted_intent]["responses"]
+        return random.choice(responses)
+    else:
+        # Fallback if somehow a non-defined intent is predicted (shouldn't happen with this setup)
+        return random.choice(intents["unknown"]["responses"])
+
+
+# --- 6. Main Chat Loop ---
+def start_chatbot():
+    print("Hello! I'm your AI Assistant. Type 'quit' to exit.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["quit", "exit"]:
+            print("Chatbot:", random.choice(intents["goodbye"]["responses"]))
+            break
+
+        response = get_chatbot_response(user_input)
+        print(f"Chatbot: {response}")
+
+
+# --- 7. Run the Chatbot ---
+
+if __name__ == "_main_":
+     start_chatbot()
